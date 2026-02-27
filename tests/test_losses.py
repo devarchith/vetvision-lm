@@ -67,11 +67,13 @@ class TestContrastiveLoss:
         from losses.contrastive import ContrastiveLoss
         import torch.nn.functional as F
         loss_fn = ContrastiveLoss()
-        v = F.normalize(torch.randn(4, 64, requires_grad=True), p=2, dim=-1)
+        # v_raw is the leaf; F.normalize produces a non-leaf, so check leaf grad
+        v_raw = torch.randn(4, 64, requires_grad=True)
+        v = F.normalize(v_raw, p=2, dim=-1)
         t = F.normalize(torch.randn(4, 64), p=2, dim=-1)
         loss = loss_fn(v, t)
         loss.backward()
-        assert v.grad is not None
+        assert v_raw.grad is not None
 
 
 # ---------------------------------------------------------------------------

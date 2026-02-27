@@ -1,0 +1,66 @@
+model:
+  vision_encoder:
+    name: "vit_base_patch16_224"
+    pretrained: true
+    img_size: 224
+  text_encoder:
+    name: "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext"
+    pretrained: true
+    max_length: 128
+  species_module:
+    num_species: 2
+    species_embed_dim: 64
+    hidden_dim: 512
+    output_dim: 512
+  projection:
+    vision_input_dim: 768
+    text_input_dim: 768
+    embed_dim: 512
+    hidden_dim: 512
+
+loss:
+  temperature: 0.07
+  lambda_species: 0.5
+  margin: 0.2
+
+training:
+  batch_size: 32
+  learning_rate: 1e-4
+  weight_decay: 1e-4
+  num_epochs: 50
+  warmup_epochs: 5
+  lr_schedule: "cosine"
+  gradient_clip: 1.0
+  num_workers: 8
+  pin_memory: true
+  mixed_precision: true
+
+data:
+  chexpert_root: "data/CheXpert-v1.0-small"
+  train_csv: "data/CheXpert-v1.0-small/train.csv"
+  valid_csv: "data/CheXpert-v1.0-small/valid.csv"
+  img_size: 224
+  augmentation:
+    random_horizontal_flip: 0.5
+    random_rotation: 10
+    color_jitter:
+      brightness: 0.2
+      contrast: 0.2
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+
+logging:
+  log_dir: "logs/pretrain"
+  checkpoint_dir: "checkpoints/pretrain"
+  save_every: 5
+  log_every: 100
+  wandb:
+    project: "vetvision-lm"
+    entity: null
+    enabled: false
+
+hardware:
+  device: "cuda"
+  num_gpus: 1
+  seed: 42

@@ -1,0 +1,70 @@
+model:
+  checkpoint: "checkpoints/finetune/best.pth"
+  embed_dim: 512
+
+evaluation:
+  batch_size: 64
+  num_workers: 8
+  device: "cuda"
+
+retrieval:
+  k_values: [1, 5, 10]
+  metrics: ["recall", "mrr"]
+
+classification:
+  species: ["canine", "feline"]
+  metrics: ["accuracy", "auc_roc", "f1"]
+  zero_shot_templates:
+    - "A radiograph of a {} with {}"
+    - "Chest X-ray showing {} pathology in {}"
+    - "Veterinary radiograph of a {} patient"
+
+ablation:
+  components:
+    - name: "full_model"
+      description: "Full VetVision-LM"
+      remove: []
+    - name: "no_species_module"
+      description: "Without species-adaptive module"
+      remove: ["species_module"]
+    - name: "no_species_loss"
+      description: "Without species-aware loss"
+      remove: ["species_loss"]
+    - name: "no_species"
+      description: "Without any species components"
+      remove: ["species_module", "species_loss"]
+
+baselines:
+  - name: "CLIP"
+    model_id: "openai/clip-vit-base-patch16"
+  - name: "BiomedCLIP"
+    model_id: "microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+  - name: "ResNet50"
+    model_id: "resnet50"
+
+data:
+  test_manifest: "data/vet_dataset/test_manifest.csv"
+  img_size: 224
+
+visualization:
+  tsne:
+    perplexity: 30
+    n_iter: 1000
+    output_dir: "results/tsne"
+  attention:
+    output_dir: "results/attention"
+    num_samples: 10
+
+output:
+  results_dir: "results"
+  report_file: "results/evaluation_report.json"
+
+paper_results:
+  note: "Reported in Paper (not reproduced)"
+  retrieval_recall_at_1: 55.1
+  chexzero_baseline_recall_at_1: 42.8
+  zero_shot_accuracy_overall: 77.3
+  zero_shot_accuracy_canine: 79.0
+  zero_shot_accuracy_feline: 75.5
+  ablation_no_species_module_delta: -6.5
+  ablation_no_species_loss_delta: -3.8

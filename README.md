@@ -5,6 +5,9 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+<!-- Live CI badge screenshot (captured from passing run) -->
+[![CI — Smoke Tests passing](assets/ci-passing-badge.png)](https://github.com/devarchith/vetvision-lm/actions/workflows/ci.yml)
+
 **VetVision-LM** — *Self-Supervised Vision-Language Representation Learning for Multi-Species Veterinary Radiology*
 
 A production-grade research implementation of a contrastive vision-language model tailored for veterinary chest radiography, supporting multi-species (canine / feline) representation learning via a learnable species-adaptive module.
